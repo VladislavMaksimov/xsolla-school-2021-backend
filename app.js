@@ -96,7 +96,35 @@ app.delete('/api/products/:id', function(req, res) {
   db.close();
   res.status(200);
   res.send();
-})
+});
+
+app.put('/api/products/:id', function(req, res) {
+  let id = req.params.id;
+  let name = req.body.name;
+  let type = req.body.type;
+  let price = req.body.price;
+  let newSku = type + '-' + name + '-' + id.split('-').slice(2).join('-');
+  let db = new sqlite3.Database('./db/db.db');
+
+  let cb = function(sku) {
+    let newSku = type + '-' + name + '-' + sku.split('-').slice(2).join('-');
+    let stmtUpdate = db.prepare("UPDATE products SET name = ?, type = ?, price = ?, sku = ? WHERE id = ? OR sku = ?");
+    stmtUpdate.run(name, type, price, newSku, id, id);
+    stmtUpdate.finalize();
+    res.json(newSku);
+  };
+
+  let stmtSelect = `SELECT sku FROM products WHERE id = "${id}" OR sku = "${id}"`
+  db.all(stmtSelect, function(err, rows) {
+    if (err) {
+      throw err;
+    };
+    let sku = rows[0].sku;
+    return cb(sku);
+  });
+  
+  db.close();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

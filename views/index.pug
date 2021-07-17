@@ -22,16 +22,18 @@ block content
       h1 Current product
       p
         strong SKU: 
-        span(id='current-product-sku') -
+        input(type="text" id='current-product-sku')
       p
         strong Name: 
-        span(id='current-product-name') -
+        input(type="text" id='current-product-name')
       p
         strong Type: 
-        span(id='current-product-type') -
+        input(type="text" id='current-product-type')
       p
         strong Price: 
-        span(id='current-product-price') -
+        input(type="text" id='current-product-price')
+    button(type='button' id='button-update')
+      | Update product
     button(type='button' id='button-delete')
       | Delete product
 
