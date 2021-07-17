@@ -1,5 +1,20 @@
+const renderProduct = (product) => {
+    const sku = document.getElementById('current-product-sku')
+    const name = document.getElementById('current-product-name')
+    const type = document.getElementById('current-product-type')
+    const price = document.getElementById('current-product-price')
+    sku.innerText = product.sku !== '' ? product.sku : '-'
+    name.innerText = product.name !== '' ? product.name : '-'
+    type.innerText = product.type !== '' ? product.type : '-'
+    price.innerText = product.price !== '' ? product.price : '-'
+}
+
 const getProduct = (sku) => {
-    console.log(sku)
+    fetch('http://localhost:3000/api/products/' + sku, {
+        method: 'GET'
+    })
+        .then(response => response.json())
+        .then(json => renderProduct(json))
 }
 
 const renderProducts = (products) => {

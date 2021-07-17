@@ -7,7 +7,6 @@ var { v4: uuidv4 } = require('uuid');
 const { callbackify } = require('util');
 const { resolve } = require('path');
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('./db/db.db');
 
 var app = express();
 
@@ -27,6 +26,7 @@ app.get('/', function(req, res, next) {
 app.get('/api/products', function(req, res) {
     let stmt = 'SELECT id, name, type, price, sku FROM products';
     let products = [];
+    let db = new sqlite3.Database('./db/db.db');
     db.serialize(function(){
       db.all(stmt, function(err, rows) {
         if (err) {
@@ -47,15 +47,40 @@ app.get('/api/products', function(req, res) {
     });
     db.close();
 });
+app.get('/api/products/:id', function(req, res) {
+  let id = req.params.id;
+  let stmt = `SELECT id, name, type, price, sku FROM products WHERE id = "${id}" OR sku = "${id}"`;
+  let db = new sqlite3.Database('./db/db.db');
+  db.serialize(function() {
+    db.all(stmt, function(err, rows) {
+      if (err) {
+        throw err;
+      };
+      let row = rows[0];
+      let product = {
+        id: row.id,
+        name: row.name,
+        type: row.type,
+        price: row.price,
+        sku: row.sku
+      };
+      res.setHeader('Content-Type', 'application/json');
+      res.json(product);
+    });
+  });
+  db.close();
+});
 app.post('/api/products', function(req, res) {
     let id = uuidv4();
     let name = req.body.name;
     let type = req.body.type;
     let price = req.body.price;
     let sku = type + '-' + name + '-' + id;
+    let db = new sqlite3.Database('./db/db.db');
     let stmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
     stmt.run(id, name, type, price, sku);
     stmt.finalize();
+    db.close();
     res.json(sku);
 });
 
