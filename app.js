@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var { v4: uuidv4 } = require('uuid');
+const { callbackify } = require('util');
+const { resolve } = require('path');
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./db/db.db');
 
@@ -22,6 +24,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function(req, res, next) {
   res.render('index', { title: 'Products' });
 });
+app.get('/api/products', function(req, res) {
+    let stmt = 'SELECT id, name, type, price, sku FROM products';
+    let products = [];
+    db.serialize(function(){
+      db.all(stmt, function(err, rows) {
+        if (err) {
+          throw err;
+        };
+        rows.forEach(function(row) {
+          products.push({
+            id: row.id,
+            name: row.name,
+            type: row.type,
+            price: row.price,
+            sku: row.sku
+          });
+        });
+        res.setHeader('Content-Type', 'application/json');
+        res.json(products);
+      });
+    });
+    db.close();
+});
 app.post('/api/products', function(req, res) {
     let id = uuidv4();
     let name = req.body.name;
@@ -29,10 +54,9 @@ app.post('/api/products', function(req, res) {
     let price = req.body.price;
     let sku = type + '-' + name + '-' + id;
     let stmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
-    stmt.run(id, name, type, price, sku)
-    stmt.finalize()
-    db.close()
-    res.json(sku)
+    stmt.run(id, name, type, price, sku);
+    stmt.finalize();
+    res.json(sku);
 });
 
 // catch 404 and forward to error handler
