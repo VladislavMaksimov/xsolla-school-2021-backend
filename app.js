@@ -3,9 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var { v4: uuidv4 } = require('uuid');
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('./db/db.db');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// var productsRouter = require('./routes/products');
 
 var app = express();
 
@@ -19,8 +22,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// app.use('/api/products', productsRouter);
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.post('/api/products', function(req, res) {
+    let id = uuidv4();
+    let name = req.body.name;
+    let type = req.body.type;
+    let price = req.body.price;
+    let sku = type + '-' + name + '-' + id;
+    let stmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
+    stmt.run(id, name, type, price, sku)
+    stmt.finalize()
+    db.close()
+    res.json(sku)
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
