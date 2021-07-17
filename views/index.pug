@@ -1,5 +1,18 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  form
+    div
+      label
+        | Name
+        input(type="text" id="name")
+    div
+      label
+        | Type
+        input(type="text" id="type")
+    div
+      label
+        | Price
+        input(type="text" id="price")
+    button(type='button' id='button-post')
+      | Post data
