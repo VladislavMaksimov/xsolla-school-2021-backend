@@ -17,6 +17,31 @@ const getProduct = (sku) => {
         .then(json => renderProduct(json))
 }
 
+const removeProduct = (skuNumber) => {
+    const sku = document.getElementById('current-product-sku')
+    const name = document.getElementById('current-product-name')
+    const type = document.getElementById('current-product-type')
+    const price = document.getElementById('current-product-price')
+    sku.innerText = '-'
+    name.innerText = '-'
+    type.innerText = '-'
+    price.innerText = '-'
+    // remove product from products list
+    // rerender products list
+}
+
+const deleteProduct = (sku) => {
+    fetch('http://localhost:3000/api/products/' + sku, {
+        method: 'DELETE'
+    })
+        .then(response => { if (response.status === 200) removeProduct(sku) } )
+}
+
+const deleteCurrentProduct = () => {
+    const currentProductSKU = document.getElementById('current-product-sku').innerText
+    deleteProduct(currentProductSKU)
+}
+
 const renderProducts = (products) => {
     products.forEach(product => {
         const productCard = document.createElement('div')
@@ -68,4 +93,6 @@ window.addEventListener('load', () => {
     getProducts()
     const postButton = document.getElementById('button-post')
     postButton.addEventListener('click', postProduct)
+    const deleteButton = document.getElementById('button-delete')
+    deleteButton.addEventListener('click', deleteCurrentProduct)
 })

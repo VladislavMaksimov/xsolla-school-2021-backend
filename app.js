@@ -23,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function(req, res, next) {
   res.render('index', { title: 'Products' });
 });
+
 app.get('/api/products', function(req, res) {
     let stmt = 'SELECT id, name, type, price, sku FROM products';
     let products = [];
@@ -47,6 +48,21 @@ app.get('/api/products', function(req, res) {
     });
     db.close();
 });
+
+app.post('/api/products', function(req, res) {
+  let id = uuidv4();
+  let name = req.body.name;
+  let type = req.body.type;
+  let price = req.body.price;
+  let sku = type + '-' + name + '-' + id;
+  let db = new sqlite3.Database('./db/db.db');
+  let stmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
+  stmt.run(id, name, type, price, sku);
+  stmt.finalize();
+  db.close();
+  res.json(sku);
+});
+
 app.get('/api/products/:id', function(req, res) {
   let id = req.params.id;
   let stmt = `SELECT id, name, type, price, sku FROM products WHERE id = "${id}" OR sku = "${id}"`;
@@ -70,19 +86,17 @@ app.get('/api/products/:id', function(req, res) {
   });
   db.close();
 });
-app.post('/api/products', function(req, res) {
-    let id = uuidv4();
-    let name = req.body.name;
-    let type = req.body.type;
-    let price = req.body.price;
-    let sku = type + '-' + name + '-' + id;
-    let db = new sqlite3.Database('./db/db.db');
-    let stmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
-    stmt.run(id, name, type, price, sku);
-    stmt.finalize();
-    db.close();
-    res.json(sku);
-});
+
+app.delete('/api/products/:id', function(req, res) {
+  let id = req.params.id;
+  let db = new sqlite3.Database('./db/db.db');
+  let stmt = db.prepare("DELETE FROM products WHERE id = ? OR sku = ?");
+  stmt.run(id,id);
+  stmt.finalize();
+  db.close();
+  res.status(200);
+  res.send();
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
