@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"name"	TEXT,
 	"type"	TEXT,
 	"price"	INTEGER,
+	"sku"	TEXT,
 	PRIMARY KEY("id")
 );
 COMMIT;
