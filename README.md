@@ -1,5 +1,7 @@
 # xsolla-school-2021-backend
 
+<img src="/screenshots/app.png">
+
 [Тестовое задание](https://github.com/xsolla/xsolla-school-backend-2021) для потока Backend Xsolla School 2021.  
 
 Приложение позволяет управлять товарами с помощью методов RESTful API.  
