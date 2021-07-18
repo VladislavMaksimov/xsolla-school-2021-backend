@@ -74,7 +74,12 @@ const updateCurrentProduct = () => {
     updateProduct(currentProductSKU, currentProductName, currentProductType, currentProductPrice)
 }
 
-const renderProducts = (products) => {
+const getMoreProducts = () => {
+    event.target.remove()
+    getProducts()
+}
+
+const renderProducts = (status, products) => {
     products.forEach(product => {
         const productCard = document.createElement('div')
         productCard.className = 'product-card'
@@ -84,15 +89,30 @@ const renderProducts = (products) => {
         productCard.appendChild(productSKU)
         const container = document.getElementById('products-container')
         container.appendChild(productCard)
-    });
+    })
+    if (status === 200) {
+        const moreProductsButton = document.createElement('button')
+        moreProductsButton.id = 'button-more-products'
+        moreProductsButton.innerText = 'Show more'
+        moreProductsButton.addEventListener('click', getMoreProducts)
+        const container = document.getElementById('products-container-wrapper')
+        container.appendChild(moreProductsButton)
+    }
 }
 
 const getProducts = () => {
-    fetch('http://localhost:3000/api/products', {
+    const offset = sessionStorage.getItem('offset')
+    fetch('http://localhost:3000/api/products?offset=' + offset, {
         method: 'GET'
     })
-        .then(response => response.json())
-        .then(json => renderProducts(json))
+        .then(response => {
+            const status = response.status
+            if (status === 200)
+                response.json().then(products => {
+                    sessionStorage.setItem('offset', parseInt(offset) + 5)
+                    renderProducts(status, products)
+                })
+        })
 }
 
 const postData = (name, type, price) => {
@@ -122,6 +142,7 @@ const postProduct = () => {
 }
 
 window.addEventListener('load', () => {
+    sessionStorage.setItem('offset', 0)
     getProducts()
     const postButton = document.getElementById('button-post')
     postButton.addEventListener('click', postProduct)

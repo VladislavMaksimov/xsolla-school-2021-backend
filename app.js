@@ -4,8 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var { v4: uuidv4 } = require('uuid');
-const { callbackify } = require('util');
-const { resolve } = require('path');
 var sqlite3 = require('sqlite3').verbose();
 
 var app = express();
@@ -20,12 +18,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.disable('etag');
+
 app.get('/', function(req, res, next) {
   res.render('index', { title: 'Products' });
 });
 
 app.get('/api/products', function(req, res) {
-    let stmt = 'SELECT id, name, type, price, sku FROM products';
+    let offset = req.query.offset;
+    let stmt = `SELECT id, name, type, price, sku FROM products ORDER BY sku LIMIT 5 OFFSET ${offset}`;
     let products = [];
     let db = new sqlite3.Database('./db/db.db');
     db.serialize(function(){
@@ -42,8 +43,15 @@ app.get('/api/products', function(req, res) {
             sku: row.sku
           });
         });
-        res.setHeader('Content-Type', 'application/json');
-        res.json(products);
+        if (products.length > 0) {
+          res.status(200);
+          res.setHeader('Content-Type', 'application/json');
+          res.json(products);
+        }
+        else {
+          res.status(304);
+          res.send();
+        }
       });
     });
     db.close();
