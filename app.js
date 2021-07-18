@@ -5,6 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var { v4: uuidv4 } = require('uuid');
 var sqlite3 = require('sqlite3').verbose();
+var fs = require('fs');
+
+let db = new sqlite3.Database('./db/db.db');
+let stmt = db.prepare('CREATE TABLE IF NOT EXISTS "products" ("id"	TEXT, "name"	TEXT, "type"	TEXT, "price"	INTEGER, "sku"	TEXT, PRIMARY KEY("id"));');
+stmt.run();
+stmt.finalize();
+db.close();
 
 var app = express();
 
