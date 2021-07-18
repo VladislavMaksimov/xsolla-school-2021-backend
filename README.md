@@ -31,25 +31,11 @@
 ```
 npm install
 ```
-3. Создайте файл базы данных SQLite /db/db.db
-4. Создайте таблицу products с помощью кода из /db/db.sql
-```
-BEGIN TRANSACTION;
-CREATE TABLE IF NOT EXISTS "products" (
-	"id"	TEXT,
-	"name"	TEXT,
-	"type"	TEXT,
-	"price"	INTEGER,
-	"sku"	TEXT,
-	PRIMARY KEY("id")
-);
-COMMIT;
-```
-6. Запустите приложение командой  
+3. Запустите приложение командой  
 ```
 npm start
 ```
-7. Откройте в браузере страницу http://localhost:3000/
+4. Откройте в браузере страницу http://localhost:3000/
 
 ## Тестирование приложения
 
