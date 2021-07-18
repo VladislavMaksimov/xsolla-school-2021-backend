@@ -3,7 +3,7 @@ const renderProduct = (product) => {
     const name = document.getElementById('current-product-name')
     const type = document.getElementById('current-product-type')
     const price = document.getElementById('current-product-price')
-    sku.value = product.sku !== '' ? product.sku : ''
+    sku.innerText = product.sku !== '' ? product.sku : ''
     name.value = product.name !== '' ? product.name : ''
     type.value = product.type !== '' ? product.type : ''
     price.value = product.price !== '' ? product.price : ''
@@ -22,7 +22,7 @@ const removeProduct = (skuNumber) => {
     const name = document.getElementById('current-product-name')
     const type = document.getElementById('current-product-type')
     const price = document.getElementById('current-product-price')
-    sku.value = ''
+    sku.innerText = ''
     name.value = ''
     type.value = ''
     price.value = ''
@@ -44,7 +44,7 @@ const deleteCurrentProduct = () => {
 
 const rerenderProduct = (skuNumber, name, type, price) => {
     const sku = document.getElementById('current-product-sku')
-    sku.value = skuNumber
+    sku.innerText = skuNumber
     // update product in products list
     // rerender products list
 }
