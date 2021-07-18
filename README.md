@@ -20,6 +20,12 @@
 * Получение каталога товаров
 * Получение информации о товаре по SKU (API позволяет использовать и SKU, и id)
 
+Стек технологий:
+* Node.js
+* Express.js
+* SQLite 3.x
+* HTML, CSS
+
 ## Документация OpenAPI 3.0
 
 Документация доступна по [ссылке](https://app.swaggerhub.com/apis/VladislavMaksimov/xsolla-school-2021-backend/1.0.0).
