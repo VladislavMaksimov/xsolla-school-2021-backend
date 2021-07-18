@@ -1,8 +1,92 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+html {
+  font-size: 10px;
+}
+
+div, body, p {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 1.4rem;
+  color: black;
+  padding: 50px;
+}
+
+p, span, label {
+  line-height: calc(1.4rem * 1.5);
+}
+
+h1 {
+  font-size: 2.8rem;
+  line-height: 3.6rem;
+}
+
+#product-work {
+  margin-bottom: 5.6rem;
+}
+
+#product-work > * {
+  vertical-align: top;
+}
+
+#product-work > *:not(:nth-last-child(1)) {
+  margin-right: 2.8rem;
+}
+
+#form-post, #current-product {
+  display: inline-block;
+  background: rgb(235, 232, 232);
+  padding: 2.8rem;
+  border-radius: 8px;
+}
+
+#form-post > *:not(:nth-last-child(1)) {
+  margin-bottom: 1.2rem;
+}
+
+#form-post label, #current-product label {
+  display: flex;
+  flex-direction: column;
+}
+
+#current-product > article > * {
+  margin-bottom: 1.2rem;
+}
+
+#button-post, #button-update, #button-delete {
+  margin-top: 0.8rem;
+  border: none;
+  background: black;
+  color: white;
+  padding: 1.4rem 2.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buttons-wrapper > button:not(:nth-last-child(1)) {
+  margin-right: 1.4rem;
+}
+
+#products-container-wrapper > h1 {
+  margin-bottom: 1.4rem;
+}
+
+#products-container {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  column-gap: 2.8rem;
+  row-gap: 2.8rem;
+}
+
+.product-card {
+  background: rgb(245, 243, 243);
+  padding: 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
