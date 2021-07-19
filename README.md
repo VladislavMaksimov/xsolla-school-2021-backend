@@ -24,7 +24,7 @@
 * Node.js
 * Express.js
 * SQLite 3.x
-* HTML, CSS
+* HTML, CSS, Pug
 
 ## Документация OpenAPI 3.0
 
