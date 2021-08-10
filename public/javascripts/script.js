@@ -10,7 +10,7 @@ const renderProduct = (product) => {
 }
 
 const getProduct = (sku) => {
-    fetch('http://localhost:3000/api/products/' + sku, {
+    fetch('http://localhost:3000/api/v1/products/' + sku, {
         method: 'GET',
         headers: {
             'Accept': 'application/json, */*; q=0.01'
@@ -34,7 +34,7 @@ const removeProduct = (skuNumber) => {
 }
 
 const deleteProduct = (sku) => {
-    fetch('http://localhost:3000/api/products/' + sku, {
+    fetch('http://localhost:3000/api/v1/products/' + sku, {
         method: 'DELETE',
         headers: {
             'Accept': 'application/json, */*; q=0.01'
@@ -61,7 +61,7 @@ const updateProduct = (sku, name, type, price) => {
         type: type,
         price: price
     }
-    fetch('http://localhost:3000/api/products/' + sku, {
+    fetch('http://localhost:3000/api/v1/products/' + sku, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -109,7 +109,7 @@ const renderProducts = (status, products) => {
 
 const getProducts = () => {
     const offset = sessionStorage.getItem('offset')
-    fetch('http://localhost:3000/api/products?offset=' + offset, {
+    fetch('http://localhost:3000/api/v1/products?offset=' + offset, {
         method: 'GET',
         headers: {
             'Accept': 'application/json, */*; q=0.01'
@@ -133,7 +133,7 @@ const postData = (name, type, price) => {
         price: price
     }
 
-    fetch('http://localhost:3000/api/products', {
+    fetch('http://localhost:3000/api/v1/products', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',

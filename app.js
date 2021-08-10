@@ -31,7 +31,7 @@ app.get('/', function(req, res, next) {
   res.render('index', { title: 'Products' });
 });
 
-app.get('/api/products', function(req, res) {
+app.get('/api/v1/products', function(req, res) {
     // server can only send json
     if (!req.headers.accept.match('/*application\/json/*')) {
       res.status(400);
@@ -71,7 +71,7 @@ app.get('/api/products', function(req, res) {
     db.close();
 });
 
-app.post('/api/products', function(req, res) {
+app.post('/api/v1/products', function(req, res) {
   let id = uuidv4();
   let name = req.body.name;
   let type = req.body.type;
@@ -85,7 +85,7 @@ app.post('/api/products', function(req, res) {
   res.json(sku);
 });
 
-app.get('/api/products/:id', function(req, res) {
+app.get('/api/v1/products/:id', function(req, res) {
   // server can only send json
   if (!req.headers.accept.match('/*application\/json/*')) {
     res.status(400);
@@ -116,7 +116,7 @@ app.get('/api/products/:id', function(req, res) {
   db.close();
 });
 
-app.delete('/api/products/:id', function(req, res) {
+app.delete('/api/v1/products/:id', function(req, res) {
   let id = req.params.id;
   let db = new sqlite3.Database('./db/db.db');
   let stmt = db.prepare("DELETE FROM products WHERE id = ? OR sku = ?");
@@ -127,7 +127,7 @@ app.delete('/api/products/:id', function(req, res) {
   res.send();
 });
 
-app.put('/api/products/:id', function(req, res) {
+app.put('/api/v1/products/:id', function(req, res) {
   let id = req.params.id;
   let name = req.body.name;
   let type = req.body.type;
