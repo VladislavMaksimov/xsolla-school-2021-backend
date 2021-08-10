@@ -64,7 +64,7 @@ const updateProduct = (sku, name, type, price) => {
     fetch('http://localhost:3000/api/products/' + sku, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json, */*; q=0.01',
         },
         body: JSON.stringify(data)
@@ -136,7 +136,7 @@ const postData = (name, type, price) => {
     fetch('http://localhost:3000/api/products', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json, */*; q=0.01',
         },
         body: JSON.stringify(data)
