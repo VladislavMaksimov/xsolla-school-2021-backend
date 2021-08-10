@@ -32,6 +32,13 @@ app.get('/', function(req, res, next) {
 });
 
 app.get('/api/products', function(req, res) {
+    // server can only send json
+    if (!req.headers.accept.match('/*application\/json/*')) {
+      res.status(400);
+      res.send();
+      return;
+    }
+
     let offset = req.query.offset;
     let stmt = `SELECT id, name, type, price, sku FROM products ORDER BY sku LIMIT 5 OFFSET ${offset}`;
     let products = [];
@@ -79,6 +86,13 @@ app.post('/api/products', function(req, res) {
 });
 
 app.get('/api/products/:id', function(req, res) {
+  // server can only send json
+  if (!req.headers.accept.match('/*application\/json/*')) {
+    res.status(400);
+    res.send();
+    return;
+  }
+    
   let id = req.params.id;
   let stmt = `SELECT id, name, type, price, sku FROM products WHERE id = "${id}" OR sku = "${id}"`;
   let db = new sqlite3.Database('./db/db.db');
