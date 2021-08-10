@@ -52,7 +52,7 @@ app.get('/api/products', function(req, res) {
         });
         if (products.length > 0) {
           res.status(200);
-          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Content-Type', 'application/json; charset=UTF-8');
           res.json(products);
         }
         else {
@@ -95,7 +95,7 @@ app.get('/api/products/:id', function(req, res) {
         price: row.price,
         sku: row.sku
       };
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Type', 'application/json; charset=UTF-8');
       res.json(product);
     });
   });
