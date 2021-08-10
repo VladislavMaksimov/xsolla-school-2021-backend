@@ -11,7 +11,10 @@ const renderProduct = (product) => {
 
 const getProduct = (sku) => {
     fetch('http://localhost:3000/api/products/' + sku, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, */*; q=0.01'
+        }
     })
         .then(response => response.json())
         .then(json => renderProduct(json))
@@ -32,7 +35,10 @@ const removeProduct = (skuNumber) => {
 
 const deleteProduct = (sku) => {
     fetch('http://localhost:3000/api/products/' + sku, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json, */*; q=0.01'
+        }
     })
         .then(response => { if (response.status === 200) removeProduct(sku) } )
 }
@@ -59,6 +65,7 @@ const updateProduct = (sku, name, type, price) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json, */*; q=0.01',
         },
         body: JSON.stringify(data)
     })
@@ -103,7 +110,10 @@ const renderProducts = (status, products) => {
 const getProducts = () => {
     const offset = sessionStorage.getItem('offset')
     fetch('http://localhost:3000/api/products?offset=' + offset, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, */*; q=0.01'
+        }
     })
         .then(response => {
             const status = response.status
@@ -127,6 +137,7 @@ const postData = (name, type, price) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json, */*; q=0.01',
         },
         body: JSON.stringify(data)
     })
