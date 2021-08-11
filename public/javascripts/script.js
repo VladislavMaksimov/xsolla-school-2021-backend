@@ -69,8 +69,9 @@ const updateProduct = (sku, name, type, price) => {
         },
         body: JSON.stringify(data)
     })
-        .then(response => response.json())
-        .then(json => { if (json && typeof json !== 'undefined') rerenderProduct(json, name, type, price) })
+    // client can rerender product wth new sku without server's response
+    // .then(response => response.json())
+    // .then(json => { if (json && typeof json !== 'undefined') rerenderProduct(json, name, type, price) })
 }
 
 const updateCurrentProduct = () => {
@@ -97,7 +98,7 @@ const renderProducts = (status, products) => {
         const container = document.getElementById('products-container')
         container.appendChild(productCard)
     })
-    if (status === 200) {
+    if (status === 200 && products.length > 0) {
         const moreProductsButton = document.createElement('button')
         moreProductsButton.id = 'button-more-products'
         moreProductsButton.innerText = 'Show more'

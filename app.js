@@ -48,6 +48,7 @@ app.get('/api/v1/products', function(req, res) {
         if (err) {
           throw err;
         };
+
         rows.forEach(function(row) {
           products.push({
             id: row.id,
@@ -57,15 +58,12 @@ app.get('/api/v1/products', function(req, res) {
             sku: row.sku
           });
         });
-        if (products.length > 0) {
-          res.status(200);
-          res.setHeader('Content-Type', 'application/json; charset=UTF-8');
-          res.json(products);
-        }
-        else {
-          res.status(304);
-          res.send();
-        }
+
+        res.status(200);
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+        res.json(products);
       });
     });
     db.close();
@@ -77,11 +75,16 @@ app.post('/api/v1/product', function(req, res) {
   let type = req.body.type;
   let price = req.body.price;
   let sku = type + '-' + name + '-' + id;
+
   let db = new sqlite3.Database('./db/db.db');
   let stmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
   stmt.run(id, name, type, price, sku);
   stmt.finalize();
   db.close();
+
+  res.status(201);
+  // throws a error when sku contains cyrillic, need to fix this later
+  // res.setHeader('Location', '/product/' + sku);
   res.json(sku);
 });
 
@@ -101,6 +104,11 @@ app.get('/api/v1/product/:id', function(req, res) {
       if (err) {
         throw err;
       };
+      if (rows.length === 0) {
+        res.status(404);
+        res.send();
+        return;
+      };
       let row = rows[0];
       let product = {
         id: row.id,
@@ -110,6 +118,8 @@ app.get('/api/v1/product/:id', function(req, res) {
         sku: row.sku
       };
       res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
       res.json(product);
     });
   });
@@ -123,7 +133,7 @@ app.delete('/api/v1/product/:id', function(req, res) {
   stmt.run(id,id);
   stmt.finalize();
   db.close();
-  res.status(200);
+  res.status(204);
   res.send();
 });
 
@@ -132,7 +142,6 @@ app.put('/api/v1/product/:id', function(req, res) {
   let name = req.body.name;
   let type = req.body.type;
   let price = req.body.price;
-  let newSku = type + '-' + name + '-' + id.split('-').slice(2).join('-');
   let db = new sqlite3.Database('./db/db.db');
 
   let cb = function(sku) {
@@ -140,7 +149,8 @@ app.put('/api/v1/product/:id', function(req, res) {
     let stmtUpdate = db.prepare("UPDATE products SET name = ?, type = ?, price = ?, sku = ? WHERE id = ? OR sku = ?");
     stmtUpdate.run(name, type, price, newSku, id, id);
     stmtUpdate.finalize();
-    res.json(newSku);
+    res.status(204);
+    res.send()
   };
 
   let stmtSelect = `SELECT sku FROM products WHERE id = "${id}" OR sku = "${id}"`
