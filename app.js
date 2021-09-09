@@ -7,6 +7,9 @@ var { v4: uuidv4 } = require('uuid');
 var sqlite3 = require('sqlite3').verbose();
 var fs = require('fs');
 
+var swaggerUi = require('swagger-ui-express');
+var YAML = require('yamljs');
+
 let db = new sqlite3.Database('./db/db.db');
 let stmt = db.prepare('CREATE TABLE IF NOT EXISTS "products" ("id"	TEXT, "name"	TEXT, "type"	TEXT, "price"	INTEGER, "sku"	TEXT, PRIMARY KEY("id"));');
 stmt.run();
@@ -30,6 +33,9 @@ app.disable('etag');
 app.get('/', function(req, res, next) {
   res.render('index', { title: 'Products' });
 });
+
+var swaggerDocument = YAML.load('./swagger.yaml');
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/api/v1/products', function(req, res) {
     // server can only send json
