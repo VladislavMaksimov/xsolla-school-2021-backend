@@ -31,7 +31,14 @@ app.get('/', function(req, res, next) {
   res.render('index', { title: 'Products' });
 });
 
-app.get('/api/products', function(req, res) {
+app.get('/api/v1/products', function(req, res) {
+    // server can only send json
+    if (!req.headers.accept.match('/*application\/json/*')) {
+      res.status(400);
+      res.send();
+      return;
+    }
+
     let offset = req.query.offset;
     let stmt = `SELECT id, name, type, price, sku FROM products ORDER BY sku LIMIT 5 OFFSET ${offset}`;
     let products = [];
@@ -41,6 +48,7 @@ app.get('/api/products', function(req, res) {
         if (err) {
           throw err;
         };
+
         rows.forEach(function(row) {
           products.push({
             id: row.id,
@@ -50,35 +58,44 @@ app.get('/api/products', function(req, res) {
             sku: row.sku
           });
         });
-        if (products.length > 0) {
-          res.status(200);
-          res.setHeader('Content-Type', 'application/json');
-          res.json(products);
-        }
-        else {
-          res.status(304);
-          res.send();
-        }
+
+        res.status(200);
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+        res.json(products);
       });
     });
     db.close();
 });
 
-app.post('/api/products', function(req, res) {
+app.post('/api/v1/product', function(req, res) {
   let id = uuidv4();
   let name = req.body.name;
   let type = req.body.type;
   let price = req.body.price;
   let sku = type + '-' + name + '-' + id;
+
   let db = new sqlite3.Database('./db/db.db');
   let stmt = db.prepare("INSERT INTO products VALUES (?, ?, ?, ?, ?)");
   stmt.run(id, name, type, price, sku);
   stmt.finalize();
   db.close();
+
+  res.status(201);
+  // throws a error when sku contains cyrillic, need to fix this later
+  // res.setHeader('Location', '/product/' + sku);
   res.json(sku);
 });
 
-app.get('/api/products/:id', function(req, res) {
+app.get('/api/v1/product/:id', function(req, res) {
+  // server can only send json
+  if (!req.headers.accept.match('/*application\/json/*')) {
+    res.status(400);
+    res.send();
+    return;
+  }
+    
   let id = req.params.id;
   let stmt = `SELECT id, name, type, price, sku FROM products WHERE id = "${id}" OR sku = "${id}"`;
   let db = new sqlite3.Database('./db/db.db');
@@ -86,6 +103,11 @@ app.get('/api/products/:id', function(req, res) {
     db.all(stmt, function(err, rows) {
       if (err) {
         throw err;
+      };
+      if (rows.length === 0) {
+        res.status(404);
+        res.send();
+        return;
       };
       let row = rows[0];
       let product = {
@@ -95,30 +117,31 @@ app.get('/api/products/:id', function(req, res) {
         price: row.price,
         sku: row.sku
       };
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
       res.json(product);
     });
   });
   db.close();
 });
 
-app.delete('/api/products/:id', function(req, res) {
+app.delete('/api/v1/product/:id', function(req, res) {
   let id = req.params.id;
   let db = new sqlite3.Database('./db/db.db');
   let stmt = db.prepare("DELETE FROM products WHERE id = ? OR sku = ?");
   stmt.run(id,id);
   stmt.finalize();
   db.close();
-  res.status(200);
+  res.status(204);
   res.send();
 });
 
-app.put('/api/products/:id', function(req, res) {
+app.put('/api/v1/product/:id', function(req, res) {
   let id = req.params.id;
   let name = req.body.name;
   let type = req.body.type;
   let price = req.body.price;
-  let newSku = type + '-' + name + '-' + id.split('-').slice(2).join('-');
   let db = new sqlite3.Database('./db/db.db');
 
   let cb = function(sku) {
@@ -126,7 +149,8 @@ app.put('/api/products/:id', function(req, res) {
     let stmtUpdate = db.prepare("UPDATE products SET name = ?, type = ?, price = ?, sku = ? WHERE id = ? OR sku = ?");
     stmtUpdate.run(name, type, price, newSku, id, id);
     stmtUpdate.finalize();
-    res.json(newSku);
+    res.status(204);
+    res.send()
   };
 
   let stmtSelect = `SELECT sku FROM products WHERE id = "${id}" OR sku = "${id}"`

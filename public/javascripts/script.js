@@ -10,8 +10,11 @@ const renderProduct = (product) => {
 }
 
 const getProduct = (sku) => {
-    fetch('http://localhost:3000/api/products/' + sku, {
-        method: 'GET'
+    fetch('http://localhost:3000/api/v1/product/' + sku, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, */*; q=0.01'
+        }
     })
         .then(response => response.json())
         .then(json => renderProduct(json))
@@ -31,8 +34,11 @@ const removeProduct = (skuNumber) => {
 }
 
 const deleteProduct = (sku) => {
-    fetch('http://localhost:3000/api/products/' + sku, {
-        method: 'DELETE'
+    fetch('http://localhost:3000/api/v1/product/' + sku, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json, */*; q=0.01'
+        }
     })
         .then(response => { if (response.status === 200) removeProduct(sku) } )
 }
@@ -55,15 +61,17 @@ const updateProduct = (sku, name, type, price) => {
         type: type,
         price: price
     }
-    fetch('http://localhost:3000/api/products/' + sku, {
+    fetch('http://localhost:3000/api/v1/product/' + sku, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json, */*; q=0.01',
         },
         body: JSON.stringify(data)
     })
-        .then(response => response.json())
-        .then(json => { if (json && typeof json !== 'undefined') rerenderProduct(json, name, type, price) })
+    // client can rerender product wth new sku without server's response
+    // .then(response => response.json())
+    // .then(json => { if (json && typeof json !== 'undefined') rerenderProduct(json, name, type, price) })
 }
 
 const updateCurrentProduct = () => {
@@ -90,7 +98,7 @@ const renderProducts = (status, products) => {
         const container = document.getElementById('products-container')
         container.appendChild(productCard)
     })
-    if (status === 200) {
+    if (status === 200 && products.length > 0) {
         const moreProductsButton = document.createElement('button')
         moreProductsButton.id = 'button-more-products'
         moreProductsButton.innerText = 'Show more'
@@ -102,8 +110,11 @@ const renderProducts = (status, products) => {
 
 const getProducts = () => {
     const offset = sessionStorage.getItem('offset')
-    fetch('http://localhost:3000/api/products?offset=' + offset, {
-        method: 'GET'
+    fetch('http://localhost:3000/api/v1/products?offset=' + offset, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, */*; q=0.01'
+        }
     })
         .then(response => {
             const status = response.status
@@ -123,10 +134,11 @@ const postData = (name, type, price) => {
         price: price
     }
 
-    fetch('http://localhost:3000/api/products', {
+    fetch('http://localhost:3000/api/v1/product', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json, */*; q=0.01',
         },
         body: JSON.stringify(data)
     })
