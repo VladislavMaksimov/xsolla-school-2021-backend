@@ -1,0 +1,179 @@
+openapi: 3.0.0
+info:
+  description: |
+    Тестовое задание для потока Backend Xsolla School 2021. API позволяет управлять товарами с помощью методов CRUD.
+  version: "1.0.0"
+  title: Products
+  contact:
+    email: workmaximov@yandex.ru
+tags:
+  - name: product
+    description: Информация о товаре
+paths:
+  /api/v1/products:
+    get:
+      tags:
+        - product
+      summary: Получить список товаров
+      description: "Получить список товаров с отступом. Товары отсортированы в алфавитном порядке по SKU. Метод возвращает 5 товаров с заданным отступом от начала списка."
+      operationId: get_products
+      produces:
+        - application/json
+      parameters:
+        - name: offset
+          in: query
+          description: Отступ, после которого возвращаются товары.
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 5
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '304':
+          description: Достигнут конец каталога товаров
+  /api/v1/product:
+    post:
+      tags:
+        - product
+      summary: Создать товар
+      description: "Создать товар с уникальными идентификатором и SKU. Метод генерирует идентификатор (uuid), создаёт SKU по шаблону: *типТовара-названиеТовара-идентификатор*."
+      operationId: post_product
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: productBody
+          in: body
+          description: Товар без SKU и идентификатора.
+          required: true
+          schema:
+            type: object
+            $ref: '#/components/schemas/ProductBody'
+      responses:
+        '200':
+          description: успех
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'game-FarCry-3fa85f64-5717-4562-b3fc-2c963f66afa6'
+  '/api/v1/product/{id}':
+    get:
+      tags:
+        - product
+      summary: Получить товар
+      description: Получить товар по идентификатору или SKU. И то, и другое можно передать в качестве id.
+      operationId: get_product
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор или SKU товара.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Product'
+    delete:
+      tags:
+        - product
+      summary: Удалить товар
+      description: Удалить товар по идентификатору или SKU. И то, и другое можно передать в качестве id.
+      operationId: delete_product
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор или SKU товара
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успех
+    put:
+      tags:
+        - product
+      summary: Изменить товар
+      description: "Изменить товар по идентификатору или SKU. И то, и другое можно передать в качестве id. Метод меняет любые атрибуты товара, кроме идентификатора. SKU меняется автоматически по шаблону: *типТовара-названиеТовара-идентификатор*."
+      operationId: update_product
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор или SKU товара
+          required: true
+          schema:
+            type: string
+        - name: productBody
+          in: body
+          description: Товар без SKU и идентификатора.
+          required: true
+          schema:
+            type: object
+            $ref: '#/components/schemas/ProductBody'
+      responses:
+        '200':
+          description: Успех
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+        name:
+          type: string
+          example: FarCry
+        type:
+          type: string
+          example: game
+        price:
+          type: string
+          example: '9001'
+        sku:
+          type: string
+          example: 'game-FarCry-3fa85f64-5717-4562-b3fc-2c963f66afa6'
+    ProductBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: FarCry
+        type:
+          type: string
+          example: game
+        price:
+          type: string
+          example: '9001'
+  requestBodies:
+    Product:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+      description: Товар
+    ProductBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductBody'
+      description: Товар без SKU и идентификатора

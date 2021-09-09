@@ -34,7 +34,7 @@ app.get('/', function(req, res, next) {
   res.render('index', { title: 'Products' });
 });
 
-var swaggerDocument = YAML.load('./swagger.yaml');
+var swaggerDocument = YAML.load('./docs/swagger.yaml');
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/api/v1/products', function(req, res) {
