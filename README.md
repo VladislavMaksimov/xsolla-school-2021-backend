@@ -26,10 +26,6 @@
 * SQLite 3.x
 * HTML, CSS, Pug
 
-## Документация OpenAPI 3.0
-
-Документация доступна по [ссылке](https://app.swaggerhub.com/apis/VladislavMaksimov/xsolla-school-2021-backend/1.0.0).
-
 ## Запуск приложения
 
 1. Склонируйте репозиторий на свой компьютер
@@ -42,6 +38,10 @@ npm install
 npm start
 ```
 4. Откройте в браузере страницу http://localhost:3000/
+
+## Документация OpenAPI 3.0
+
+Документация доступна по адресу http://localhost:3000/docs после запуска приложения.
 
 ## Тестирование приложения
 
