@@ -37,6 +37,22 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Product'
+              example:
+                - id: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                  name: FarCry
+                  type: game
+                  price: '9001'
+                  sku: 'game-FarCry-3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                - id: 'e4195086-c53b-4dfe-9fbc-b5af3cebf5c6'
+                  name: Skyrim
+                  type: game
+                  price: '9002'
+                  sku: 'game-Skyrim-e4195086-c53b-4dfe-9fbc-b5af3cebf5c6'
+                - id: '0aabc70a-f9e2-46ff-907e-b83daae690af'
+                  name: Oblivion
+                  type: game
+                  price: '9003'
+                  sku: 'game-Oblivion-0aabc70a-f9e2-46ff-907e-b83daae690af'
   /api/v1/product:
     post:
       tags:
