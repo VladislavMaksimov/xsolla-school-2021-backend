@@ -30,15 +30,13 @@ paths:
             example: 5
       responses:
         '200':
-          description: Успех
+          description: OK.
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Product'
-        '304':
-          description: Достигнут конец каталога товаров
   /api/v1/product:
     post:
       tags:
@@ -58,8 +56,8 @@ paths:
               type: object
               $ref: '#/components/schemas/ProductBody'
       responses:
-        '200':
-          description: успех
+        '201':
+          description: Товар добавлен.
           content:
             application/json:
               schema:
@@ -83,12 +81,16 @@ paths:
             type: string
       responses:
         '200':
-          description: Успех
+          description: OK.
           content:
             application/json:
               schema:
                 type: object
                 $ref: '#/components/schemas/Product'
+        '400':
+          description: Отстутсвует заголовок application/json в объекте запроса.
+        '404':
+          description: Товар не найден.
     delete:
       tags:
         - product
@@ -103,8 +105,8 @@ paths:
           schema:
             type: string
       responses:
-        '200':
-          description: Успех
+        '204':
+          description: Товар удалён.
     put:
       tags:
         - product
@@ -128,8 +130,8 @@ paths:
               type: object
               $ref: '#/components/schemas/ProductBody'
       responses:
-        '200':
-          description: Успех
+        '204':
+          description: Товар изменён.
 components:
   schemas:
     Product:
