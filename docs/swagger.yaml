@@ -134,6 +134,9 @@ components:
   schemas:
     Product:
       type: object
+      required:
+        - id
+        - sku
       properties:
         id:
           type: string
