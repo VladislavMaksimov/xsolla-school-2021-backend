@@ -50,14 +50,13 @@ paths:
         - application/json
       produces:
         - application/json
-      parameters:
-        - name: productBody
-          in: body
-          description: Товар без SKU и идентификатора.
-          required: true
-          schema:
-            type: object
-            $ref: '#/components/schemas/ProductBody'
+      requestBody:
+        description: Товар без SKU и идентификатора.
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/ProductBody'
       responses:
         '200':
           description: успех
@@ -121,13 +120,13 @@ paths:
           required: true
           schema:
             type: string
-        - name: productBody
-          in: body
-          description: Товар без SKU и идентификатора.
-          required: true
-          schema:
-            type: object
-            $ref: '#/components/schemas/ProductBody'
+      requestBody:
+        description: Товар без SKU и идентификатора.
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/ProductBody'
       responses:
         '200':
           description: Успех
