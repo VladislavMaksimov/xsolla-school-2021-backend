@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: |
     Тестовое задание для потока Backend Xsolla School 2021. API позволяет управлять товарами с помощью методов CRUD.
-  version: "1.0.0"
+  version: "1.0.1"
   title: Products
   contact:
     email: workmaximov@yandex.ru
